@@ -13,7 +13,6 @@ export class UserInfoComponent {
   constructor(public apiProvider: ApiProvider) {
     this.result = this.apiProvider.getFuncionario(1);
     this.result.subscribe( func => {
-      console.log(func);
       this.funcionario = func;
     });
   }
