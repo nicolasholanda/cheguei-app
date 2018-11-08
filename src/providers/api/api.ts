@@ -14,9 +14,15 @@ export class ApiProvider {
     
   }
 
-  getFuncionario(id): Observable<any> {
-    let url = `http://localhost/cheguei-backend/api/v1/funcionarios/show.php?funcionario_id=${id}`;
-    return this.http.get(url);
+  getFuncionario() {
+    let url = `http://localhost/cheguei-master/api/v1/funcionarios/login.php`;
+    this.http.post(
+      url, 
+      {data:{"mac_address":"20:91:28:30"}},
+      {headers: {'Content-Type': 'applicaton/json'}})
+      .subscribe(data => {
+      console.log(data);
+    });
   }
 
 }

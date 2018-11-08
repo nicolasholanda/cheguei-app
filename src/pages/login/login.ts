@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HomePage } from '../home/home';
+import { ApiProvider } from '../../providers/api/api';
 
 @IonicPage()
 @Component({
@@ -11,11 +11,13 @@ import { HomePage } from '../home/home';
 })
 export class LoginPage {
   user:Observable<any>;
-  result;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, http:HttpClient) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public api:ApiProvider) {
   }
 
-  
+  validaUser = () => {
+    this.api.getFuncionario();
+    this.navCtrl.push(HomePage);
+  }
 
 }

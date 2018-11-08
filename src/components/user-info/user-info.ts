@@ -8,13 +8,14 @@ import { ApiProvider } from '../../providers/api/api';
 })
 export class UserInfoComponent {
   result: Observable<any>;
-  funcionario;
+  funcionario:any={
+    nome: "João Catinga",
+    id: 201882,
+    cargo: "Pedreiro"
+  };
 
   constructor(public apiProvider: ApiProvider) {
-    this.result = this.apiProvider.getFuncionario(1);
-    this.result.subscribe( func => {
-      this.funcionario = func;
-    });
+    
   }
 
 }

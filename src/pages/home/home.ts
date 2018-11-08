@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: 'page-home',
@@ -9,7 +10,8 @@ import { NavController } from 'ionic-angular';
 export class HomePage {
   horarios = [];
   opcao = "Entrada"
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, public alertCtrl: AlertController) {
+    
   }
   marca(): void{
     if(this.horarios.length < 4){
@@ -18,7 +20,11 @@ export class HomePage {
       else{ this.opcao="Entrada"}
     }
     else{
-      alert("Só amanhã agora, meu barão");
+      this.alertCtrl.create({
+        title: "Atenção",
+        subTitle: "Você já marcou o máximo de pontos por hoje.",
+        buttons: ['OK']
+      }).present();
     }
   }
 }

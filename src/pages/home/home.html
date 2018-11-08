@@ -1,5 +1,5 @@
-<ion-header color="danger">
-  <ion-navbar positive>
+<ion-header>
+  <ion-navbar positive hideBackButton *navbar>
     <ion-title>
       Cheguei App
     </ion-title>
@@ -8,9 +8,9 @@
 
 <ion-content padding-top center text-center>
   <user-info></user-info>
-  <ion-content contentHeight="10" class="classe">
+  <ion-content class="classe">
     <ion-list>
-      <ion-item text-center text-justify *ngFor="let horario of horarios">
+      <ion-item text-center *ngFor="let horario of horarios">
         <ion-badge item-start [ngClass]="{'entrada': horario.opcao=='Entrada', 'saida': horario.opcao=='Saída'}">{{horario.opcao}}</ion-badge>
         {{horario.hora.getHours()}}:{{horario.hora.getMinutes()}}:{{horario.hora.getSeconds()}}
       </ion-item>
