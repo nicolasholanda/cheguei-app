@@ -4,12 +4,15 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { HttpClientModule } from '@angular/common/http';
+import { Device } from '@ionic-native/device';
+import { IonicStorageModule } from '@ionic/storage'
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { ComponentsModule } from '../components/components.module';
 import { ApiProvider } from '../providers/api/api';
+import { AlertProvider } from '../providers/alert/alert';
 
 @NgModule({
   declarations: [
@@ -20,6 +23,7 @@ import { ApiProvider } from '../providers/api/api';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
     ComponentsModule,
     HttpClientModule
   ],
@@ -33,7 +37,9 @@ import { ApiProvider } from '../providers/api/api';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    ApiProvider
+    ApiProvider,
+    Device,
+    AlertProvider
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

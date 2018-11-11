@@ -1,28 +1,48 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Device } from '@ionic-native/device';
+import { Storage } from '@ionic/storage';
+import { AlertProvider } from '../alert/alert';
 
-/*
-  Generated class for the ApiProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class ApiProvider {
-  constructor(public http: HttpClient) {
-    
+  func;
+
+  constructor(public http: HttpClient, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
+    this.storage.ready().then(()=>{
+
+    })
   }
 
-  getFuncionario() {
-    let url = `http://localhost/cheguei-master/api/v1/funcionarios/login.php`;
-    this.http.post(
-      url, 
-      {data:{"mac_address":"20:91:28:30"}},
-      {headers: {'Content-Type': 'applicaton/json'}})
-      .subscribe(data => {
-      console.log(data);
-    });
+  validaFuncionario() {
+    /*
+    this.http.post('http://localhost/cheguei-master/api/v1/funcionarios/login.php',
+    {body:{'mac_address':this.device.uuid}},
+    {headers:{'Content-Type':'application/javascript'}}).toPromise()
+    .then(data => {
+      console.log(data)
+    })
+    .catch(err => {
+      console.log(err.message)
+    })*/
+    this.http.post("http://ajatdesenvolvimento.com.br/blog/cheguei/api/v1/funcionarios/login.php",
+    {'body':{'mac_address':'b88b32d7262b2f3b'}},{'headers':{'Content-Type':'application/json'}} ).toPromise()
+    .then(data => {
+      alert(data)
+    })
+    .catch( err =>{
+      alert(err.message)
+    })
+
+  }
+
+  getFuncionario(){
+    return this.func
+  }
+
+  atualizaHorarios(hora){
+    this.func.frequencia.push(hora)
+    this.storage.set('funcionario', JSON.stringify(this.func) );
   }
 
 }

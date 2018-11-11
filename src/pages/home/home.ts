@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
-import { AlertController } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
+import { AlertProvider } from '../../providers/alert/alert';
+import { ApiProvider } from '../../providers/api/api';
+import { LoginPage } from '../login/login';
 
 @Component({
   selector: 'page-home',
@@ -10,21 +12,36 @@ import { AlertController } from 'ionic-angular';
 export class HomePage {
   horarios = [];
   opcao = "Entrada"
-  constructor(public navCtrl: NavController, public alertCtrl: AlertController) {
-    
+  funcionario;
+
+  constructor(public navCtrl: NavController, public alertCtrl: AlertProvider, public navParams:NavParams, public api:ApiProvider) {
+    this.funcionario = navParams.get('funcionario');
+    this.horarios = this.funcionario.frequencia;
+    this.horarios.forEach(horario => {
+      horario = {hora: new Date(horario.hora), opcao: horario.opcao}
+    })
+    if(this.horarios[this.horarios.length-1]=="Saída" || this.horarios[this.horarios.length-1]==undefined){
+      this.opcao="Entrada"
+    }
+    else{ this.opcao="Saída"}
+    console.log(this.horarios)
   }
+
+  logout(){
+    this.navCtrl.setRoot(LoginPage);
+  }
+
   marca(): void{
     if(this.horarios.length < 4){
-      this.horarios.push( {hora: new Date(), opcao: this.opcao} );
-      if(this.opcao=="Entrada"){ this.opcao="Saída" }
-      else{ this.opcao="Entrada"}
+      let now = {hora: new Date().getTime(), opcao: this.opcao}
+      this.api.atualizaHorarios( now )
+      if(this.opcao=="Saída"){
+        this.opcao="Entrada"
+      }
+      else{ this.opcao="Saída"}
     }
     else{
-      this.alertCtrl.create({
-        title: "Atenção",
-        subTitle: "Você já marcou o máximo de pontos por hoje.",
-        buttons: ['OK']
-      }).present();
+      this.alertCtrl.maximoPontos();
     }
   }
 }

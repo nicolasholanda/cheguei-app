@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ApiProvider } from '../../providers/api/api';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'user-info',
@@ -8,14 +9,17 @@ import { ApiProvider } from '../../providers/api/api';
 })
 export class UserInfoComponent {
   result: Observable<any>;
-  funcionario:any={
-    nome: "João Catinga",
-    id: 201882,
-    cargo: "Pedreiro"
-  };
+  _funcionario
+  @Input()
+  set funcionario(func){
+    this._funcionario = func;
+  }
+  get funcionario(){
+    return this._funcionario;
+  }
 
-  constructor(public apiProvider: ApiProvider) {
-    
+  constructor(public apiProvider: ApiProvider, public storage:Storage) {
+    console.log(this._funcionario)
   }
 
 }

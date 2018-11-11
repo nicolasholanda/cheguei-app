@@ -1,19 +1,22 @@
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>Login</ion-title>
+  <ion-navbar color="eerie-black">
+    <ion-title>Cheguei App</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding center text-align>
-  <ion-list>
+<ion-content padding center text-align class="background">
+  <ion-list class="centralizado">
     <ion-item>
-      <ion-input placeholder="MAC Address" type="number"></ion-input>
+      <ion-input placeholder="Digite seu UUID..." [(ngModel)]="uuid"></ion-input>
     </ion-item>
     <ion-item>
-      <button ion-button (click)="validaUser()">Login</button>
+      <ion-buttons>
+        <button ion-button (click)="validaUser()" full class="botao" strong>Login</button>
+        <button ion-button full class="botao2" strong (click)="cadastro()">Cadastro</button>
+      </ion-buttons>
     </ion-item>
   </ion-list>
 

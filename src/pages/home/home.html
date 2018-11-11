@@ -1,20 +1,25 @@
 <ion-header>
-  <ion-navbar positive hideBackButton *navbar>
+  <ion-navbar color="eerie-black">
     <ion-title>
       Cheguei App
     </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only color="light" (click)="logout()">
+        <ion-icon name="log-out"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding-top center text-center>
-  <user-info></user-info>
+<ion-content padding-top center text-center class="background">
+  <user-info [funcionario]="funcionario"></user-info>
   <ion-content class="classe">
     <ion-list>
       <ion-item text-center *ngFor="let horario of horarios">
         <ion-badge item-start [ngClass]="{'entrada': horario.opcao=='Entrada', 'saida': horario.opcao=='Saída'}">{{horario.opcao}}</ion-badge>
-        {{horario.hora.getHours()}}:{{horario.hora.getMinutes()}}:{{horario.hora.getSeconds()}}
-      </ion-item>
+          {{horario.hora | date:'dd/MM - H:mm:ss'}}
+        </ion-item>
     </ion-list>
   </ion-content>
-  <button ion-button full (click)="marca()">{{opcao}}</button>
+  <button ion-button full (click)="marca()" color="lapislazuli">{{opcao}}</button>
 </ion-content>
