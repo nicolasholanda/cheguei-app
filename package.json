@@ -23,6 +23,7 @@
     "@ionic-native/android-permissions": "^4.17.0",
     "@ionic-native/core": "~4.15.0",
     "@ionic-native/device": "^4.17.0",
+    "@ionic-native/http": "^4.17.0",
     "@ionic-native/splash-screen": "~4.15.0",
     "@ionic-native/status-bar": "~4.15.0",
     "@ionic-native/uid": "^4.17.0",
@@ -43,7 +44,8 @@
       "cordova-plugin-dreamover-uid": {},
       "cordova-plugin-android-permissions": {},
       "cordova-plugin-device": {},
-      "cordova-sqlite-storage": {}
+      "cordova-sqlite-storage": {},
+      "cordova-plugin-advanced-http": {}
     }
   }
 }

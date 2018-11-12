@@ -1,48 +1,90 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Device } from '@ionic-native/device';
 import { Storage } from '@ionic/storage';
 import { AlertProvider } from '../alert/alert';
+import { HTTP } from '@ionic-native/http';
 
 @Injectable()
 export class ApiProvider {
   func;
 
-  constructor(public http: HttpClient, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
+  constructor(public http:HTTP, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
     this.storage.ready().then(()=>{
-
+      this.storage.clear();
     })
   }
 
   validaFuncionario() {
-    /*
-    this.http.post('http://localhost/cheguei-master/api/v1/funcionarios/login.php',
-    {body:{'mac_address':this.device.uuid}},
-    {headers:{'Content-Type':'application/javascript'}}).toPromise()
-    .then(data => {
-      console.log(data)
+    this.storage.get('funcionario')
+    .then(response => {
+      if(response!=(null||undefined)){
+        let now = new Date()
+        let hj = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`
+        this.func = JSON.parse(response)
+        this.func.frequencia.filter( horario => {
+          if(horario.hora.search(hj)!=-1){return true}
+        })
+      }
     })
-    .catch(err => {
-      console.log(err.message)
-    })*/
-    this.http.post("http://ajatdesenvolvimento.com.br/blog/cheguei/api/v1/funcionarios/login.php",
-    {'body':{'mac_address':'b88b32d7262b2f3b'}},{'headers':{'Content-Type':'application/json'}} ).toPromise()
-    .then(data => {
-      alert(data)
-    })
-    .catch( err =>{
-      alert(err.message)
-    })
-
+    if(this.func == (undefined || null)){
+      let url = "http://ajatdesenvolvimento.com.br/blog/cheguei/api/v1/funcionarios"
+      this.http.setDataSerializer("json");
+      this.http.post(`${url}/login.php`, {"mac_address": this.device.uuid}, {'content-type':'application/json;charset=UTF-8'})
+      .then(data => { 
+        this.func = JSON.parse(data.data).funcionarios[0]
+        alert(JSON.stringify(this.func))
+        this.getHorarios()
+        this.storage.set("funcionario", JSON.stringify(this.func))
+      })
+      .catch(err => { alert(err.message) })
+    }
   }
 
   getFuncionario(){
     return this.func
   }
 
+
+  getHorarios(){
+    if(this.func.frequencia!=(null || undefined)){
+      let now = new Date()
+      let aux = []
+      let hj = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`
+      this.func.frequencia.forEach( hora => {
+        if(hora.hora_entrada.search(hj) != -1 ){
+          aux.push( {hora:new Date(hora.hora_entrada.replace("-", "/")), opcao:"Entrada"})
+        }
+        else if (hora.hora_saida.search(hj) != -1){
+          aux.push( {hora:new Date(hora.hora_saida.replace("-", "/")), opcao:"Saída"})
+        }
+      })
+      this.func.frequencia = aux;
+    }
+  }
+
   atualizaHorarios(hora){
+    let url = "http://ajatdesenvolvimento.com.br/blog/cheguei/api/v1/frequencia"
+    let h = hora.hora
+    let horaString = `${h.getFullYear()}-${h.getMonth()+1}-${h.getDate()} ${h.toLocaleTimeString()}`
+
     this.func.frequencia.push(hora)
     this.storage.set('funcionario', JSON.stringify(this.func) );
+    if(hora.opcao == 'Entrada'){
+      this.http.post(`${url}/create.php`,
+      {
+        "funcionario_id": this.func.id,
+        "hora_entrada": horaString
+      }, {})
+      .catch(err => {alert(err.message)})
+    }
+    else{
+      this.http.post(`${url}/update.php`,
+      {
+        "hora_saida":horaString,
+        "funcionario_id": this.func.id
+      }, {})
+      .catch(err => {alert(err.message)})
+    }
   }
 
 }

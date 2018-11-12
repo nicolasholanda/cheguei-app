@@ -28,12 +28,12 @@ export class HomePage {
   }
 
   logout(){
-    this.navCtrl.setRoot(LoginPage);
+    this.navCtrl.setRoot(LoginPage, {}, {animate: true, direction: 'forward'});
   }
 
   marca(): void{
     if(this.horarios.length < 4){
-      let now = {hora: new Date().getTime(), opcao: this.opcao}
+      let now = {hora: new Date(), opcao: this.opcao}
       this.api.atualizaHorarios( now )
       if(this.opcao=="Saída"){
         this.opcao="Entrada"

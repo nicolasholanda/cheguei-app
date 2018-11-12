@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { Device } from '@ionic-native/device';
 import { IonicStorageModule } from '@ionic/storage'
+import { HTTP } from '@ionic-native/http';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -39,7 +40,8 @@ import { AlertProvider } from '../providers/alert/alert';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ApiProvider,
     Device,
-    AlertProvider
+    AlertProvider,
+    HTTP
   ],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
