@@ -10,7 +10,7 @@ export class ApiProvider {
 
   constructor(public http:HTTP, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
     this.storage.ready().then(()=>{
-      this.storage.clear();
+      
     })
   }
 
@@ -18,12 +18,8 @@ export class ApiProvider {
     this.storage.get('funcionario')
     .then(response => {
       if(response!=(null||undefined)){
-        let now = new Date()
-        let hj = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`
         this.func = JSON.parse(response)
-        this.func.frequencia.filter( horario => {
-          if(horario.hora.search(hj)!=-1){return true}
-        })
+        this.atualizaHorarioLocal()
       }
     })
     if(this.func == (undefined || null)){
@@ -32,8 +28,8 @@ export class ApiProvider {
       this.http.post(`${url}/login.php`, {"mac_address": this.device.uuid}, {'content-type':'application/json;charset=UTF-8'})
       .then(data => { 
         this.func = JSON.parse(data.data).funcionarios[0]
-        alert(JSON.stringify(this.func))
         this.getHorarios()
+        this.sortFrequencia()
         this.storage.set("funcionario", JSON.stringify(this.func))
       })
       .catch(err => { alert(err.message) })
@@ -44,6 +40,20 @@ export class ApiProvider {
     return this.func
   }
 
+  sortFrequencia(){
+    this.func.frequencia.sort( (date1, date2) => {
+      return new Date(date2)<new Date(date1)
+    })
+  }
+
+  atualizaHorarioLocal(){
+    let now = new Date()
+    let hj = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`
+    this.func.frequencia.filter( horario => {
+      if(horario.hora.search(hj)!=-1){return true}
+    })
+    this.sortFrequencia()
+  }
 
   getHorarios(){
     if(this.func.frequencia!=(null || undefined)){

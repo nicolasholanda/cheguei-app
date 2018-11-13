@@ -35,7 +35,7 @@ export class AlertProvider {
   cadastro(){
     this.alertCtrl.create({
       title:"Cadastro",
-      subTitle:`Solicite o cadastro do seguinte UDID: ${this.device.uuid}`,
+      subTitle:`Solicite o cadastro do seguinte UUID: ${this.device.uuid}`,
       buttons: ['Ok']
     }).present();
   }
@@ -43,7 +43,7 @@ export class AlertProvider {
   maximoPontos(){
     this.alertCtrl.create({
       title: "Atenção",
-      subTitle: "Você já marcou o máximo de pontos por hoje.",
+      subTitle: "Você já marcou o máximo de pontos por hoje. Volte amanhã.",
       buttons: ['OK']
     }).present();
   }

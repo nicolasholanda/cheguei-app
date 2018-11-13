@@ -31,6 +31,13 @@ export class HomePage {
     this.navCtrl.setRoot(LoginPage, {}, {animate: true, direction: 'forward'});
   }
 
+  atualizaFreq(refresher):void{
+    this.api.atualizaHorarioLocal();
+    setTimeout(()=>{
+      refresher.complete();
+    },2000)
+  }
+
   marca(): void{
     if(this.horarios.length < 4){
       let now = {hora: new Date(), opcao: this.opcao}
@@ -42,6 +49,7 @@ export class HomePage {
     }
     else{
       this.alertCtrl.maximoPontos();
+      this.logout();
     }
   }
 }
