@@ -17,14 +17,10 @@ export class HomePage {
   constructor(public navCtrl: NavController, public alertCtrl: AlertProvider, public navParams:NavParams, public api:ApiProvider) {
     this.funcionario = navParams.get('funcionario');
     this.horarios = this.funcionario.frequencia;
-    this.horarios.forEach(horario => {
-      horario = {hora: new Date(horario.hora), opcao: horario.opcao}
-    })
-    if(this.horarios[this.horarios.length-1]=="Saída" || this.horarios[this.horarios.length-1]==undefined){
+    if(this.horarios[this.horarios.length-1].opcao=="Saída" || this.horarios[this.horarios.length-1].opcao==undefined){
       this.opcao="Entrada"
     }
     else{ this.opcao="Saída"}
-    console.log(this.horarios)
   }
 
   logout(){
@@ -32,10 +28,16 @@ export class HomePage {
   }
 
   atualizaFreq(refresher):void{
-    this.api.atualizaHorarioLocal();
-    setTimeout(()=>{
+    try{
+      this.api.atualizaHorarioLocal();
+      setTimeout(()=>{
+        refresher.complete();
+      },2000)
+    }
+    catch{
+      console.log("Erro...")
       refresher.complete();
-    },2000)
+    }
   }
 
   marca(): void{

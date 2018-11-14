@@ -10,7 +10,7 @@ export class ApiProvider {
 
   constructor(public http:HTTP, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
     this.storage.ready().then(()=>{
-      
+      this.storage.clear();
     })
   }
 
@@ -48,9 +48,8 @@ export class ApiProvider {
 
   atualizaHorarioLocal(){
     let now = new Date()
-    let hj = `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()}`
     this.func.frequencia.filter( horario => {
-      if(horario.hora.search(hj)!=-1){return true}
+      if(new Date(horario.hora).toLocaleDateString()==now.toLocaleDateString()){return true}
     })
     this.sortFrequencia()
   }
@@ -62,10 +61,10 @@ export class ApiProvider {
       let hj = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`
       this.func.frequencia.forEach( hora => {
         if(hora.hora_entrada.search(hj) != -1 ){
-          aux.push( {hora:new Date(hora.hora_entrada.replace("-", "/")), opcao:"Entrada"})
-        }
-        else if (hora.hora_saida.search(hj) != -1){
-          aux.push( {hora:new Date(hora.hora_saida.replace("-", "/")), opcao:"Saída"})
+          aux.push( {hora:new Date(hora.hora_entrada.replace("-", "/")), opcao:"Entrada", id:hora.id})
+          if (hora.hora_saida.search(hj) != -1){
+            aux.push( {hora:new Date(hora.hora_saida.replace("-", "/")), opcao:"Saída"})
+          }
         }
       })
       this.func.frequencia = aux;
@@ -77,7 +76,6 @@ export class ApiProvider {
     let h = hora.hora
     let horaString = `${h.getFullYear()}-${h.getMonth()+1}-${h.getDate()} ${h.toLocaleTimeString()}`
 
-    this.func.frequencia.push(hora)
     this.storage.set('funcionario', JSON.stringify(this.func) );
     if(hora.opcao == 'Entrada'){
       this.http.post(`${url}/create.php`,
@@ -91,10 +89,12 @@ export class ApiProvider {
       this.http.post(`${url}/update.php`,
       {
         "hora_saida":horaString,
-        "funcionario_id": this.func.id
+        "funcionario_id": this.func.id,
+        "frequencia_id": +this.func.frequencia[this.func.frequencia.length-1].id
       }, {})
       .catch(err => {alert(err.message)})
     }
+    this.func.frequencia.push(hora)
   }
 
 }
