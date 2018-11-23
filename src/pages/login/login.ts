@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { ApiProvider } from '../../providers/api/api';
 import { AlertProvider } from '../../providers/alert/alert';
 
-@IonicPage()
+
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -28,7 +28,6 @@ export class LoginPage {
     
     setTimeout( () =>{
       this.user = this.api.getFuncionario();
-      console.log(this.user)
       try{
         if(this.user.nome == (undefined || null )){
           load.dismiss();
@@ -42,7 +41,7 @@ export class LoginPage {
       }
       catch(err){
         load.dismiss();
-        this.alertCtrl.falha(err.message);
+        this.alertCtrl.falha("Cheque sua conexão.");
       }
     }, 3000);
     

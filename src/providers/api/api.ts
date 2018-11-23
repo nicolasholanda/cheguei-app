@@ -9,9 +9,7 @@ export class ApiProvider {
   func;
 
   constructor(public http:HTTP, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
-    this.storage.ready().then(()=>{
-      this.storage.clear();
-    })
+    this.storage.ready().then(()=>{})
   }
 
   validaFuncionario() {
@@ -76,14 +74,13 @@ export class ApiProvider {
     let h = hora.hora
     let horaString = `${h.getFullYear()}-${h.getMonth()+1}-${h.getDate()} ${h.toLocaleTimeString()}`
 
-    this.storage.set('funcionario', JSON.stringify(this.func) );
     if(hora.opcao == 'Entrada'){
       this.http.post(`${url}/create.php`,
       {
         "funcionario_id": this.func.id,
         "hora_entrada": horaString
       }, {})
-      .catch(err => {alert(err.message)})
+      .catch(err => { console.log("Algum erro mas de boa") })
     }
     else{
       this.http.post(`${url}/update.php`,
@@ -92,9 +89,10 @@ export class ApiProvider {
         "funcionario_id": this.func.id,
         "frequencia_id": +this.func.frequencia[this.func.frequencia.length-1].id
       }, {})
-      .catch(err => {alert(err.message)})
+      .catch(err => { console.log("Algum erro mas de boa") })
     }
     this.func.frequencia.push(hora)
+    this.storage.set('funcionario', JSON.stringify(this.func) );
   }
 
 }

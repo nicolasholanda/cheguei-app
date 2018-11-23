@@ -17,10 +17,12 @@ export class HomePage {
   constructor(public navCtrl: NavController, public alertCtrl: AlertProvider, public navParams:NavParams, public api:ApiProvider) {
     this.funcionario = navParams.get('funcionario');
     this.horarios = this.funcionario.frequencia;
-    if(this.horarios[this.horarios.length-1].opcao=="Saída" || this.horarios[this.horarios.length-1].opcao==undefined){
-      this.opcao="Entrada"
+    if(this.horarios.length>0){
+      if(this.horarios[this.horarios.length-1].opcao==(undefined || null) || this.horarios[this.horarios.length-1].opcao=="Saída"){
+        this.opcao="Entrada"
+      }
+      else{ this.opcao="Saída"}
     }
-    else{ this.opcao="Saída"}
   }
 
   logout(){
