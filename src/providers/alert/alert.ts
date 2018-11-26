@@ -16,6 +16,14 @@ export class AlertProvider {
     }).present();
   }
 
+  msg_sucesso(msg){
+    this.alertCtrl.create(
+      {title:"Sucesso",
+      subTitle:msg,
+      buttons: ['Ok']
+    }).present();
+  }
+
   bemVindo(){
     this.alertCtrl.create({
       title:"Bem-Vindo!",

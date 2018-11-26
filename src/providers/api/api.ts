@@ -9,17 +9,12 @@ export class ApiProvider {
   func;
 
   constructor(public http:HTTP, public device: Device, public storage:Storage, public alertCtrl:AlertProvider) {
-    this.storage.ready().then(()=>{})
+    this.storage.ready().then(()=>{
+      this.storage.clear()
+    })
   }
 
   validaFuncionario() {
-    this.storage.get('funcionario')
-    .then(response => {
-      if(response!=(null||undefined)){
-        this.func = JSON.parse(response)
-        this.atualizaHorarioLocal()
-      }
-    })
     if(this.func == (undefined || null)){
       let url = "http://ajatdesenvolvimento.com.br/blog/cheguei/api/v1/funcionarios"
       this.http.setDataSerializer("json");
@@ -30,7 +25,7 @@ export class ApiProvider {
         this.sortFrequencia()
         this.storage.set("funcionario", JSON.stringify(this.func))
       })
-      .catch(err => { alert(err.message) })
+      .catch(err => { this.alertCtrl.falha("Falha durante a validação") })
     }
   }
 
@@ -80,19 +75,35 @@ export class ApiProvider {
         "funcionario_id": this.func.id,
         "hora_entrada": horaString
       }, {})
-      .catch(err => { console.log("Algum erro mas de boa") })
+      .catch(err => {
+          if(JSON.parse(err.error).message=="Entrada registrada!"){
+            hora.id = JSON.parse(err.error).frequencia_id
+            this.func.frequencia.push(hora)
+            this.storage.set('funcionario', JSON.stringify(this.func) );
+            this.alertCtrl.msg_sucesso("Entrada registrada!")
+          }
+          else{
+            this.alertCtrl.falha("Algo deu errado")
+          }
+       })
     }
     else{
       this.http.post(`${url}/update.php`,
       {
-        "hora_saida":horaString,
         "funcionario_id": this.func.id,
+        "hora_saida":horaString,
         "frequencia_id": +this.func.frequencia[this.func.frequencia.length-1].id
       }, {})
-      .catch(err => { console.log("Algum erro mas de boa") })
+      .catch(err => {
+        if(JSON.parse(err.error).message=="Saída registrada!"){
+          this.func.frequencia.push(hora)
+          this.storage.set('funcionario', JSON.stringify(this.func) );
+          this.alertCtrl.msg_sucesso("Saída registrada!")
+        }
+        else{
+          this.alertCtrl.falha("Algo deu errado")
+        }
+      })
     }
-    this.func.frequencia.push(hora)
-    this.storage.set('funcionario', JSON.stringify(this.func) );
   }
-
 }
